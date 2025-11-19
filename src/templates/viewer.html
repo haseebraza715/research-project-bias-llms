@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Bias Experiment Results Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .header .stats {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .controls h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+        
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-group label {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .panel {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .panel-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #dee2e6;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .results-list {
+            height: 600px;
+            overflow-y: auto;
+        }
+        
+        .result-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .result-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .result-item.selected {
+            background: #e7f3ff;
+            border-left: 4px solid #667eea;
+        }
+        
+        .result-item.error {
+            border-left: 4px solid #dc3545;
+        }
+        
+        .result-item.success {
+            border-left: 4px solid #28a745;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .result-title {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .result-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-ok {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .result-meta {
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .details-panel {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .details-content {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        .metadata {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .metadata-item {
+            margin-bottom: 8px;
+        }
+        
+        .metadata-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .response-text {
+            background: white;
+            padding: 20px;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>LLM Bias Experiment Results Viewer</h1>
+        <div class="stats" id="stats">Loading...</div>
+    </div>
+    
+    <div class="container">
+        <div class="controls">
+            <h2>Filters & Controls</h2>
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Model</label>
+                    <select id="modelFilter">
+                        <option value="All">All Models</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Profile</label>
+                    <select id="profileFilter">
+                        <option value="All">All Profiles</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Condition</label>
+                    <select id="conditionFilter">
+                        <option value="All">All Conditions</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Search</label>
+                    <input type="text" id="searchInput" placeholder="Search in responses...">
+                </div>
+            </div>
+            <div class="button-group">
+                <button class="btn-primary" onclick="applyFilters()">Apply Filters</button>
+                <button class="btn-secondary" onclick="clearFilters()">Clear Filters</button>
+                <button class="btn-secondary" onclick="loadLatestFile()">Load Latest File</button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="panel">
+                <div class="panel-header">Results List (<span id="resultCount">0</span> results)</div>
+                <div class="results-list" id="resultsList">
+                    <div class="loading">Loading data...</div>
+                </div>
+            </div>
+            
+            <div class="panel details-panel">
+                <div class="panel-header">Response Details</div>
+                <div class="details-content" id="detailsContent">
+                    <div class="empty">Select a result to view details</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let allData = [];
+        let filteredData = [];
+        let selectedIndex = -1;
+        
+        // Load data on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadLatestFile();
+        });
+        
+        async function loadLatestFile() {
+            try {
+                const response = await fetch('/api/load_file', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({})
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    await loadData();
+                    updateFilterOptions(result);
+                    updateStats();
+                } else {
+                    alert('Failed to load file: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Error loading file:', error);
+                alert('Error loading file: ' + error.message);
+            }
+        }
+        
+        async function loadData() {
+            try {
+                const response = await fetch('/api/data');
+                const result = await response.json();
+                allData = result.data;
+                filteredData = allData;
+                renderResults();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+        
+        function updateFilterOptions(fileInfo) {
+            const modelSelect = document.getElementById('modelFilter');
+            const profileSelect = document.getElementById('profileFilter');
+            const conditionSelect = document.getElementById('conditionFilter');
+            
+            // Clear existing options (except "All")
+            modelSelect.innerHTML = '<option value="All">All Models</option>';
+            profileSelect.innerHTML = '<option value="All">All Profiles</option>';
+            conditionSelect.innerHTML = '<option value="All">All Conditions</option>';
+            
+            // Add options
+            fileInfo.models.forEach(m => {
+                const option = document.createElement('option');
+                option.value = m;
+                option.textContent = m;
+                modelSelect.appendChild(option);
+            });
+            
+            fileInfo.profiles.forEach(p => {
+                const option = document.createElement('option');
+                option.value = p;
+                option.textContent = p;
+                profileSelect.appendChild(option);
+            });
+            
+            fileInfo.conditions.forEach(c => {
+                const option = document.createElement('option');
+                option.value = c;
+                option.textContent = c;
+                conditionSelect.appendChild(option);
+            });
+        }
+        
+        async function applyFilters() {
+            const filters = {
+                model: document.getElementById('modelFilter').value,
+                profile: document.getElementById('profileFilter').value,
+                condition: document.getElementById('conditionFilter').value,
+                search: document.getElementById('searchInput').value
+            };
+            
+            try {
+                const response = await fetch('/api/filter', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(filters)
+                });
+                const result = await response.json();
+                filteredData = result.data;
+                renderResults();
+                document.getElementById('resultCount').textContent = result.count;
+            } catch (error) {
+                console.error('Error filtering data:', error);
+            }
+        }
+        
+        function clearFilters() {
+            document.getElementById('modelFilter').value = 'All';
+            document.getElementById('profileFilter').value = 'All';
+            document.getElementById('conditionFilter').value = 'All';
+            document.getElementById('searchInput').value = '';
+            applyFilters();
+        }
+        
+        function renderResults() {
+            const container = document.getElementById('resultsList');
+            
+            if (filteredData.length === 0) {
+                container.innerHTML = '<div class="empty">No results match the filters</div>';
+                return;
+            }
+            
+            container.innerHTML = filteredData.map((item, index) => {
+                const hasError = 'error' in item;
+                const statusClass = hasError ? 'status-error' : 'status-ok';
+                const statusText = hasError ? 'ERROR' : 'OK';
+                const itemClass = hasError ? 'error' : 'success';
+                
+                return `
+                    <div class="result-item ${itemClass}" onclick="selectResult(${index})">
+                        <div class="result-header">
+                            <div class="result-title">${item.prompt_id || 'Unknown'}</div>
+                            <div class="result-status ${statusClass}">${statusText}</div>
+                        </div>
+                        <div class="result-meta">
+                            <span><strong>Model:</strong> ${item.model_id || 'Unknown'}</span>
+                            <span><strong>Profile:</strong> ${item.profile_id || 'Unknown'}</span>
+                            <span><strong>Condition:</strong> ${item.condition_id || 'Unknown'}</span>
+                            <span><strong>Repeat:</strong> ${item.repeat_index ?? '?'}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function selectResult(index) {
+            selectedIndex = index;
+            const item = filteredData[index];
+            
+            // Update selected state
+            document.querySelectorAll('.result-item').forEach((el, i) => {
+                el.classList.toggle('selected', i === index);
+            });
+            
+            // Show details
+            const detailsContent = document.getElementById('detailsContent');
+            const hasError = 'error' in item;
+            
+            let metadata = `
+                <div class="metadata">
+                    <div class="metadata-item"><span class="metadata-label">Run ID:</span> ${item.run_id || 'N/A'}</div>
+                    <div class="metadata-item"><span class="metadata-label">Model:</span> ${item.model_name || 'N/A'}</div>
+                    <div class="metadata-item"><span class="metadata-label">Profile:</span> ${item.profile_id || 'N/A'}</div>
+                    <div class="metadata-item"><span class="metadata-label">Prompt ID:</span> ${item.prompt_id || 'N/A'}</div>
+                    <div class="metadata-item"><span class="metadata-label">Condition:</span> ${item.condition_id || 'N/A'} (${item.system_prompt_type || 'N/A'})</div>
+                    <div class="metadata-item"><span class="metadata-label">Repeat:</span> ${item.repeat_index ?? 'N/A'}</div>
+                    <div class="metadata-item"><span class="metadata-label">Timestamp:</span> ${item.timestamp_start || 'N/A'}</div>
+            `;
+            
+            if (hasError) {
+                metadata += `<div class="metadata-item"><span class="metadata-label">ERROR:</span> ${item.error || 'Unknown error'}</div>`;
+            } else if (item.response_raw && item.response_raw.usage) {
+                const usage = item.response_raw.usage;
+                metadata += `
+                    <div class="metadata-item"><span class="metadata-label">Tokens:</span> ${usage.total_tokens || 'N/A'} (prompt: ${usage.prompt_tokens || 'N/A'}, completion: ${usage.completion_tokens || 'N/A'})</div>
+                `;
+            }
+            
+            metadata += '</div>';
+            
+            const responseText = hasError 
+                ? `<div class="response-text" style="color: #dc3545;">ERROR: ${item.error || 'Unknown error'}</div>`
+                : `<div class="response-text">${escapeHtml(item.response_text || 'No response')}</div>`;
+            
+            detailsContent.innerHTML = metadata + responseText;
+        }
+        
+        function updateStats() {
+            const total = allData.length;
+            const successful = allData.filter(d => !('error' in d)).length;
+            const errors = total - successful;
+            document.getElementById('stats').textContent = `Total: ${total} | Success: ${successful} | Errors: ${errors}`;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Auto-apply filters on search input
+        document.getElementById('searchInput').addEventListener('keyup', applyFilters);
+    </script>
+</body>
+</html>
+
