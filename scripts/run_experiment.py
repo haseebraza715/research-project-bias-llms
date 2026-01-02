@@ -9,7 +9,7 @@ Stores append-only raw records (no streaming, no truncation, no edits).
 import json
 import os
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Iterator
 import itertools
@@ -297,13 +297,13 @@ class ExperimentRunner:
         )
         
         # Call API
-        timestamp_start = datetime.utcnow().isoformat() + 'Z'
+        timestamp_start = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
         api_response = self._call_api(
             model_id=model_id,
             system_prompt=prompt_data['system_prompt'],
             user_message=prompt_data['user_message']
         )
-        timestamp_end = datetime.utcnow().isoformat() + 'Z'
+        timestamp_end = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
         
         # Create record
         record = self._create_record(
@@ -364,7 +364,7 @@ class ExperimentRunner:
                 print(f"  EXCEPTION: {e}")
                 # Create error record
                 error_record = {
-                    'timestamp': datetime.utcnow().isoformat() + 'Z',
+                    'timestamp': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
                     'persona_id': persona_id,
                     'question_id': question_id,
                     'model_id': model_id,
