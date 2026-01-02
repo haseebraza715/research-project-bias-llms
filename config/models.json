@@ -1,2 +1,40 @@
-{}
-
+{
+  "models": [
+    {
+      "model_id": "mimo-v2-flash",
+      "model_family": "generic",
+      "provider": "openrouter",
+      "api_model_name": "xiaomi/mimo-v2-flash:free"
+    },
+    {
+      "model_id": "devstral-2512",
+      "model_family": "mistral",
+      "provider": "openrouter",
+      "api_model_name": "mistralai/devstral-2512:free"
+    },
+    {
+      "model_id": "qwen-2.5-vl-7b",
+      "model_family": "generic",
+      "provider": "openrouter",
+      "api_model_name": "qwen/qwen-2.5-vl-7b-instruct:free"
+    },
+    {
+      "model_id": "gemma-3-27b",
+      "model_family": "generic",
+      "provider": "openrouter",
+      "api_model_name": "google/gemma-3-27b-it:free"
+    },
+    {
+      "model_id": "llama-3.3-70b",
+      "model_family": "llama",
+      "provider": "openrouter",
+      "api_model_name": "meta-llama/llama-3.3-70b-instruct:free"
+    },
+    {
+      "model_id": "gpt-oss-120b",
+      "model_family": "generic",
+      "provider": "openrouter",
+      "api_model_name": "openai/gpt-oss-120b:free"
+    }
+  ]
+}
