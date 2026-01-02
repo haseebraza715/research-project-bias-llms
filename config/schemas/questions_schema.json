@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Questions Schema",
+  "description": "JSON schema for fixed question list with immutable ordering, wording, and punctuation",
+  "type": "object",
+  "required": ["questions"],
+  "properties": {
+    "questions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["question_id", "text"],
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "pattern": "^Q\\d+_[a-z_]+$",
+            "description": "Unique question identifier (e.g., Q1_definition)"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Question text (immutable wording and punctuation)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false
+}
+

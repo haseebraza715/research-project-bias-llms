@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "System Prompts Schema",
+  "description": "JSON schema for model pre-prompt registry (per model family, version-controlled)",
+  "type": "object",
+  "minProperties": 1,
+  "patternProperties": {
+    "^[a-z_]+$": {
+      "type": "string",
+      "minLength": 1,
+      "description": "System pre-prompt text for the model family"
+    }
+  },
+  "additionalProperties": false
+}
+
