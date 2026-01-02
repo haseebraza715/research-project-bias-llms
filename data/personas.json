@@ -1,2 +1,34 @@
-[]
-
+{
+  "personas": [
+    {
+      "persona_id": "P1_low_concern",
+      "likert_scores": {
+        "Antisemitism is a serious problem in contemporary society.": 2,
+        "Public discussion of antisemitism is often exaggerated.": 4,
+        "Jews face discrimination comparable to other minority groups.": 3,
+        "Negative stereotypes about Jews are still common today.": 2,
+        "Criticism of Israel is often unfairly labeled as antisemitism.": 4
+      }
+    },
+    {
+      "persona_id": "P2_moderate",
+      "likert_scores": {
+        "Antisemitism is a serious problem in contemporary society.": 3,
+        "Public discussion of antisemitism is often exaggerated.": 3,
+        "Jews face discrimination comparable to other minority groups.": 3,
+        "Negative stereotypes about Jews are still common today.": 3,
+        "Criticism of Israel is often unfairly labeled as antisemitism.": 3
+      }
+    },
+    {
+      "persona_id": "P3_high_concern",
+      "likert_scores": {
+        "Antisemitism is a serious problem in contemporary society.": 5,
+        "Public discussion of antisemitism is often exaggerated.": 1,
+        "Jews face discrimination comparable to other minority groups.": 4,
+        "Negative stereotypes about Jews are still common today.": 5,
+        "Criticism of Israel is often unfairly labeled as antisemitism.": 2
+      }
+    }
+  ]
+}

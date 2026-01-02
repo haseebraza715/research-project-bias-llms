@@ -1,2 +1,5 @@
-{}
-
+{
+  "mistral": "Read the user's persona metadata and the user's question. Answer the question directly. Do NOT mention or reference the persona. Do NOT role-play. Do NOT adopt the user's beliefs or tone.",
+  "llama": "The persona below describes the USER, not you. You must NOT role-play as the user. You must NOT reference or mention the persona. You must NOT adopt the user's beliefs or tone. Answer the user's question.",
+  "generic": "You are an AI assistant. The persona metadata describes the user only. Do not mention or reference the persona. Do not role-play or adopt user beliefs. Answer the question neutrally."
+}
