@@ -101,7 +101,28 @@ def analyze_all_records(input_file: Path, output_file: Optional[Path] = None) ->
     return analyzed_records
 
 
-def create_analysis_table(records: List[Dict], output_file: Path):
+def create_analysis_table(records: List[Dict], output_file: Path, format: str = 'csv'):
+    """
+    Create flattened analysis table with one row per run.
+    
+    Args:
+        records: List of analyzed records
+        output_file: Path to output file
+        format: Output format ('csv' or 'parquet')
+    """
+    if not records:
+        print("No records to write")
+        return
+    
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    
+    if format.lower() == 'parquet':
+        create_parquet_table(records, output_file)
+    else:
+        create_csv_table(records, output_file)
+
+
+def create_csv_table(records: List[Dict], output_file: Path):
     """
     Create flattened CSV analysis table with one row per run.
     
@@ -109,11 +130,6 @@ def create_analysis_table(records: List[Dict], output_file: Path):
         records: List of analyzed records
         output_file: Path to output CSV file
     """
-    if not records:
-        print("No records to write")
-        return
-    
-    output_file.parent.mkdir(parents=True, exist_ok=True)
     
     # Define CSV columns
     fieldnames = [
@@ -194,7 +210,71 @@ def create_analysis_table(records: List[Dict], output_file: Path):
             }
             writer.writerow(row)
     
-    print(f"Analysis table written to: {output_file}")
+    print(f"CSV analysis table written to: {output_file}")
+
+
+def create_parquet_table(records: List[Dict], output_file: Path):
+    """
+    Create flattened Parquet analysis table with one row per run.
+    
+    Args:
+        records: List of analyzed records
+        output_file: Path to output Parquet file
+    """
+    try:
+        import pandas as pd
+    except ImportError:
+        print("Error: pandas and pyarrow required for Parquet output.")
+        print("Install with: pip install pandas pyarrow")
+        return
+    
+    # Build rows
+    rows = []
+    for record in records:
+        analysis = record.get('neutrality_analysis', {})
+        token_usage = record.get('token_usage', {})
+        response_text = record.get('response_text', '')
+        
+        row = {
+            'timestamp': record.get('timestamp', ''),
+            'persona_id': record.get('persona_id', ''),
+            'question_id': record.get('question_id', ''),
+            'model_id': record.get('model_id', ''),
+            'model_family': record.get('model_family', ''),
+            'api_model_name': record.get('api_model_name', ''),
+            'has_error': record.get('has_error', False),
+            'status_code': record.get('status_code', ''),
+            'response_text_length': len(response_text) if response_text else 0,
+            # Detectors
+            'persona_leakage_detected': analysis.get('persona_leakage', {}).get('detected', False),
+            'persona_leakage_count': analysis.get('persona_leakage', {}).get('match_count', 0),
+            'roleplay_adoption_detected': analysis.get('roleplay_adoption', {}).get('detected', False),
+            'roleplay_adoption_count': analysis.get('roleplay_adoption', {}).get('match_count', 0),
+            'refusal_flag_detected': analysis.get('refusal_flag', {}).get('detected', False),
+            'refusal_flag_count': analysis.get('refusal_flag', {}).get('match_count', 0),
+            'harmful_content_flag_detected': analysis.get('harmful_content_flag', {}).get('detected', False),
+            'harmful_content_flag_count': analysis.get('harmful_content_flag', {}).get('match_count', 0),
+            # Soft signals
+            'hedging_count': analysis.get('hedging', {}).get('count', 0),
+            'hedging_per_100_words': analysis.get('hedging', {}).get('per_100_words', 0.0),
+            'certainty_count': analysis.get('certainty', {}).get('count', 0),
+            'certainty_per_100_words': analysis.get('certainty', {}).get('per_100_words', 0.0),
+            'moral_language_count': analysis.get('moral_language', {}).get('count', 0),
+            'moral_language_per_100_words': analysis.get('moral_language', {}).get('per_100_words', 0.0),
+            'prescriptive_verbs_count': analysis.get('prescriptive_verbs', {}).get('count', 0),
+            'prescriptive_verbs_per_100_words': analysis.get('prescriptive_verbs', {}).get('per_100_words', 0.0),
+            # Token usage
+            'prompt_tokens': token_usage.get('prompt_tokens') or 0,
+            'completion_tokens': token_usage.get('completion_tokens') or 0,
+            'total_tokens': token_usage.get('total_tokens') or 0,
+        }
+        rows.append(row)
+    
+    # Create DataFrame and write Parquet
+    df = pd.DataFrame(rows)
+    df.to_parquet(output_file, index=False, engine='pyarrow')
+    
+    print(f"Parquet analysis table written to: {output_file}")
 
 
 def main():
@@ -215,15 +295,22 @@ def main():
         help="Path to output analyzed JSONL file (optional)"
     )
     parser.add_argument(
-        '--output-csv',
+        '--output-table',
         type=Path,
         default=Path(__file__).parent.parent / "output" / "analysis" / "runs.csv",
-        help="Path to output CSV analysis table"
+        help="Path to output analysis table (CSV or Parquet)"
     )
     parser.add_argument(
-        '--csv-only',
+        '--format',
+        type=str,
+        choices=['csv', 'parquet'],
+        default='csv',
+        help="Output format for analysis table (default: csv)"
+    )
+    parser.add_argument(
+        '--table-only',
         action='store_true',
-        help="Only generate CSV, skip JSONL output"
+        help="Only generate analysis table, skip JSONL output"
     )
     
     args = parser.parse_args()
@@ -231,12 +318,12 @@ def main():
     # Analyze records
     analyzed_records = analyze_all_records(
         input_file=args.input,
-        output_file=None if args.csv_only else (args.output_jsonl or args.input)
+        output_file=None if args.table_only else (args.output_jsonl or args.input)
     )
     
-    # Generate CSV table
+    # Generate analysis table
     if analyzed_records:
-        create_analysis_table(analyzed_records, args.output_csv)
+        create_analysis_table(analyzed_records, args.output_table, format=args.format)
     else:
         print("No records found to analyze")
 

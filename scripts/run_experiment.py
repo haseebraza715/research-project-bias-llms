@@ -261,7 +261,12 @@ class ExperimentRunner:
         return record
     
     def _append_record(self, record: Dict):
-        """Append record to output file (append-only)."""
+        """
+        Append record to output file (append-only, ground truth).
+        
+        This maintains an append-only raw output file as ground truth.
+        Records are never modified, truncated, or deleted - only appended.
+        """
         with open(self.output_file, 'a', encoding='utf-8') as f:
             f.write(json.dumps(record, ensure_ascii=False) + '\n')
     
