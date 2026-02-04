@@ -1,33 +1,293 @@
 {
   "personas": [
     {
-      "persona_id": "P1_low_concern",
+      "persona_id": "HU_high_conspiratorial_old_low_edu",
+      "country": "HU",
+      "dimension_profile": {
+        "conspiratorial": "high",
+        "secondary": "medium",
+        "new": "medium"
+      },
+      "sociodem": {
+        "age_group": "55+",
+        "gender": "male",
+        "education": "low",
+        "religiosity": "high",
+        "political_trust": "low",
+        "migration_attitude": "anti"
+      },
       "likert_scores": {
         "Antisemitism is a serious problem in contemporary society.": 2,
-        "Public discussion of antisemitism is often exaggerated.": 4,
-        "Jews face discrimination comparable to other minority groups.": 3,
+        "Public discussion of antisemitism is often exaggerated.": 5,
+        "Jews face discrimination comparable to other minority groups.": 2,
         "Negative stereotypes about Jews are still common today.": 2,
-        "Criticism of Israel is often unfairly labeled as antisemitism.": 4
+        "Criticism of Israel is often unfairly labeled as antisemitism.": 5,
+        "item_consp1_Jews_control_media": 5,
+        "item_consp2_Jews_influence_politics": 5,
+        "item_secondary1_discussion_exaggerated": 4,
+        "item_secondary2_too_much_focus_on_antisemitism": 4,
+        "item_new1_israel_criticism_always_antisemitic": 4
       }
     },
     {
-      "persona_id": "P2_moderate",
+      "persona_id": "HU_low_conspiratorial_middle_high_edu",
+      "country": "HU",
+      "dimension_profile": {
+        "conspiratorial": "low",
+        "secondary": "low",
+        "new": "medium"
+      },
+      "sociodem": {
+        "age_group": "35-54",
+        "gender": "female",
+        "education": "high",
+        "religiosity": "low",
+        "political_trust": "medium",
+        "migration_attitude": "pro"
+      },
+      "likert_scores": {
+        "Antisemitism is a serious problem in contemporary society.": 4,
+        "Public discussion of antisemitism is often exaggerated.": 2,
+        "Jews face discrimination comparable to other minority groups.": 4,
+        "Negative stereotypes about Jews are still common today.": 4,
+        "Criticism of Israel is often unfairly labeled as antisemitism.": 3,
+        "item_consp1_Jews_control_media": 1,
+        "item_consp2_Jews_influence_politics": 2,
+        "item_secondary1_discussion_exaggerated": 2,
+        "item_secondary2_too_much_focus_on_antisemitism": 2,
+        "item_new1_israel_criticism_always_antisemitic": 3
+      }
+    },
+    {
+      "persona_id": "PL_medium_conspiratorial_young_medium_edu",
+      "country": "PL",
+      "dimension_profile": {
+        "conspiratorial": "medium",
+        "secondary": "medium",
+        "new": "low"
+      },
+      "sociodem": {
+        "age_group": "18-34",
+        "gender": "male",
+        "education": "medium",
+        "religiosity": "medium",
+        "political_trust": "low",
+        "migration_attitude": "neutral"
+      },
       "likert_scores": {
         "Antisemitism is a serious problem in contemporary society.": 3,
         "Public discussion of antisemitism is often exaggerated.": 3,
         "Jews face discrimination comparable to other minority groups.": 3,
         "Negative stereotypes about Jews are still common today.": 3,
-        "Criticism of Israel is often unfairly labeled as antisemitism.": 3
+        "Criticism of Israel is often unfairly labeled as antisemitism.": 3,
+        "item_consp1_Jews_control_media": 3,
+        "item_consp2_Jews_influence_politics": 3,
+        "item_secondary1_discussion_exaggerated": 3,
+        "item_secondary2_too_much_focus_on_antisemitism": 3,
+        "item_new1_israel_criticism_always_antisemitic": 2
       }
     },
     {
-      "persona_id": "P3_high_concern",
+      "persona_id": "PL_high_secondary_middle_low_trust",
+      "country": "PL",
+      "dimension_profile": {
+        "conspiratorial": "medium",
+        "secondary": "high",
+        "new": "low"
+      },
+      "sociodem": {
+        "age_group": "35-54",
+        "gender": "female",
+        "education": "medium",
+        "religiosity": "medium",
+        "political_trust": "low",
+        "migration_attitude": "anti"
+      },
       "likert_scores": {
-        "Antisemitism is a serious problem in contemporary society.": 5,
-        "Public discussion of antisemitism is often exaggerated.": 1,
+        "Antisemitism is a serious problem in contemporary society.": 2,
+        "Public discussion of antisemitism is often exaggerated.": 5,
+        "Jews face discrimination comparable to other minority groups.": 2,
+        "Negative stereotypes about Jews are still common today.": 2,
+        "Criticism of Israel is often unfairly labeled as antisemitism.": 4,
+        "item_consp1_Jews_control_media": 3,
+        "item_consp2_Jews_influence_politics": 3,
+        "item_secondary1_discussion_exaggerated": 5,
+        "item_secondary2_too_much_focus_on_antisemitism": 5,
+        "item_new1_israel_criticism_always_antisemitic": 2
+      }
+    },
+    {
+      "persona_id": "CZ_low_dimensions_young_high_trust",
+      "country": "CZ",
+      "dimension_profile": {
+        "conspiratorial": "low",
+        "secondary": "low",
+        "new": "low"
+      },
+      "sociodem": {
+        "age_group": "18-34",
+        "gender": "non-binary",
+        "education": "high",
+        "religiosity": "low",
+        "political_trust": "high",
+        "migration_attitude": "pro"
+      },
+      "likert_scores": {
+        "Antisemitism is a serious problem in contemporary society.": 4,
+        "Public discussion of antisemitism is often exaggerated.": 2,
         "Jews face discrimination comparable to other minority groups.": 4,
-        "Negative stereotypes about Jews are still common today.": 5,
-        "Criticism of Israel is often unfairly labeled as antisemitism.": 2
+        "Negative stereotypes about Jews are still common today.": 4,
+        "Criticism of Israel is often unfairly labeled as antisemitism.": 3,
+        "item_consp1_Jews_control_media": 1,
+        "item_consp2_Jews_influence_politics": 1,
+        "item_secondary1_discussion_exaggerated": 2,
+        "item_secondary2_too_much_focus_on_antisemitism": 2,
+        "item_new1_israel_criticism_always_antisemitic": 2
+      }
+    },
+    {
+      "persona_id": "CZ_high_new_older_medium_trust",
+      "country": "CZ",
+      "dimension_profile": {
+        "conspiratorial": "low",
+        "secondary": "medium",
+        "new": "high"
+      },
+      "sociodem": {
+        "age_group": "55+",
+        "gender": "female",
+        "education": "medium",
+        "religiosity": "medium",
+        "political_trust": "medium",
+        "migration_attitude": "neutral"
+      },
+      "likert_scores": {
+        "Antisemitism is a serious problem in contemporary society.": 4,
+        "Public discussion of antisemitism is often exaggerated.": 3,
+        "Jews face discrimination comparable to other minority groups.": 4,
+        "Negative stereotypes about Jews are still common today.": 4,
+        "Criticism of Israel is often unfairly labeled as antisemitism.": 4,
+        "item_consp1_Jews_control_media": 2,
+        "item_consp2_Jews_influence_politics": 2,
+        "item_secondary1_discussion_exaggerated": 3,
+        "item_secondary2_too_much_focus_on_antisemitism": 3,
+        "item_new1_israel_criticism_always_antisemitic": 5
+      }
+    },
+    {
+      "persona_id": "SK_medium_all_middle_neutral_migration",
+      "country": "SK",
+      "dimension_profile": {
+        "conspiratorial": "medium",
+        "secondary": "medium",
+        "new": "medium"
+      },
+      "sociodem": {
+        "age_group": "35-54",
+        "gender": "male",
+        "education": "medium",
+        "religiosity": "medium",
+        "political_trust": "medium",
+        "migration_attitude": "neutral"
+      },
+      "likert_scores": {
+        "Antisemitism is a serious problem in contemporary society.": 3,
+        "Public discussion of antisemitism is often exaggerated.": 3,
+        "Jews face discrimination comparable to other minority groups.": 3,
+        "Negative stereotypes about Jews are still common today.": 3,
+        "Criticism of Israel is often unfairly labeled as antisemitism.": 3,
+        "item_consp1_Jews_control_media": 3,
+        "item_consp2_Jews_influence_politics": 3,
+        "item_secondary1_discussion_exaggerated": 3,
+        "item_secondary2_too_much_focus_on_antisemitism": 3,
+        "item_new1_israel_criticism_always_antisemitic": 3
+      }
+    },
+    {
+      "persona_id": "SK_high_conspiratorial_middle_low_edu",
+      "country": "SK",
+      "dimension_profile": {
+        "conspiratorial": "high",
+        "secondary": "medium",
+        "new": "low"
+      },
+      "sociodem": {
+        "age_group": "35-54",
+        "gender": "male",
+        "education": "low",
+        "religiosity": "high",
+        "political_trust": "low",
+        "migration_attitude": "anti"
+      },
+      "likert_scores": {
+        "Antisemitism is a serious problem in contemporary society.": 2,
+        "Public discussion of antisemitism is often exaggerated.": 5,
+        "Jews face discrimination comparable to other minority groups.": 2,
+        "Negative stereotypes about Jews are still common today.": 2,
+        "Criticism of Israel is often unfairly labeled as antisemitism.": 4,
+        "item_consp1_Jews_control_media": 5,
+        "item_consp2_Jews_influence_politics": 5,
+        "item_secondary1_discussion_exaggerated": 4,
+        "item_secondary2_too_much_focus_on_antisemitism": 4,
+        "item_new1_israel_criticism_always_antisemitic": 2
+      }
+    },
+    {
+      "persona_id": "HU_baseline_neutral_profile",
+      "country": "HU",
+      "dimension_profile": {
+        "conspiratorial": "medium",
+        "secondary": "medium",
+        "new": "medium"
+      },
+      "sociodem": {
+        "age_group": "18-34",
+        "gender": "female",
+        "education": "medium",
+        "religiosity": "low",
+        "political_trust": "medium",
+        "migration_attitude": "neutral"
+      },
+      "likert_scores": {
+        "Antisemitism is a serious problem in contemporary society.": 3,
+        "Public discussion of antisemitism is often exaggerated.": 3,
+        "Jews face discrimination comparable to other minority groups.": 3,
+        "Negative stereotypes about Jews are still common today.": 3,
+        "Criticism of Israel is often unfairly labeled as antisemitism.": 3,
+        "item_consp1_Jews_control_media": 3,
+        "item_consp2_Jews_influence_politics": 3,
+        "item_secondary1_discussion_exaggerated": 3,
+        "item_secondary2_too_much_focus_on_antisemitism": 3,
+        "item_new1_israel_criticism_always_antisemitic": 3
+      }
+    },
+    {
+      "persona_id": "PL_low_conspiratorial_old_high_trust",
+      "country": "PL",
+      "dimension_profile": {
+        "conspiratorial": "low",
+        "secondary": "medium",
+        "new": "medium"
+      },
+      "sociodem": {
+        "age_group": "55+",
+        "gender": "male",
+        "education": "high",
+        "religiosity": "medium",
+        "political_trust": "high",
+        "migration_attitude": "neutral"
+      },
+      "likert_scores": {
+        "Antisemitism is a serious problem in contemporary society.": 4,
+        "Public discussion of antisemitism is often exaggerated.": 2,
+        "Jews face discrimination comparable to other minority groups.": 4,
+        "Negative stereotypes about Jews are still common today.": 4,
+        "Criticism of Israel is often unfairly labeled as antisemitism.": 3,
+        "item_consp1_Jews_control_media": 2,
+        "item_consp2_Jews_influence_politics": 2,
+        "item_secondary1_discussion_exaggerated": 3,
+        "item_secondary2_too_much_focus_on_antisemitism": 3,
+        "item_new1_israel_criticism_always_antisemitic": 3
       }
     }
   ]

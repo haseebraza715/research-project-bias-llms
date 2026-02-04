@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Personas Schema",
-  "description": "JSON schema for personas with ID and Likert scores",
+  "description": "JSON schema for personas with ID, PCA dimensions, sociodemographics, and Likert scores",
   "type": "object",
   "required": ["personas"],
   "properties": {
@@ -14,8 +14,63 @@
         "properties": {
           "persona_id": {
             "type": "string",
-            "pattern": "^P\\d+_[a-z_]+$",
-            "description": "Unique persona identifier (e.g., P1_low_concern)"
+            "pattern": "^[A-Z]{2}_[a-z0-9_]+$",
+            "description": "Unique persona identifier (e.g., HU_high_conspiratorial_old_low_edu)"
+          },
+          "country": {
+            "type": "string",
+            "enum": ["HU", "PL", "CZ", "SK"],
+            "description": "Country code for V4 countries"
+          },
+          "dimension_profile": {
+            "type": "object",
+            "description": "Qualitative PCA-based antisemitism dimensions",
+            "properties": {
+              "conspiratorial": {
+                "type": "string",
+                "enum": ["low", "medium", "high"]
+              },
+              "secondary": {
+                "type": "string",
+                "enum": ["low", "medium", "high"]
+              },
+              "new": {
+                "type": "string",
+                "enum": ["low", "medium", "high"]
+              }
+            },
+            "additionalProperties": false
+          },
+          "sociodem": {
+            "type": "object",
+            "description": "Sociodemographic and attitudinal attributes",
+            "properties": {
+              "age_group": {
+                "type": "string",
+                "enum": ["18-34", "35-54", "55+"]
+              },
+              "gender": {
+                "type": "string",
+                "enum": ["male", "female", "non-binary"]
+              },
+              "education": {
+                "type": "string",
+                "enum": ["low", "medium", "high"]
+              },
+              "religiosity": {
+                "type": "string",
+                "enum": ["low", "medium", "high"]
+              },
+              "political_trust": {
+                "type": "string",
+                "enum": ["low", "medium", "high"]
+              },
+              "migration_attitude": {
+                "type": "string",
+                "enum": ["anti", "neutral", "pro"]
+              }
+            },
+            "additionalProperties": false
           },
           "likert_scores": {
             "type": "object",

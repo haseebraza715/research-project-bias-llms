@@ -21,6 +21,16 @@
             "type": "string",
             "minLength": 1,
             "description": "Question text (immutable wording and punctuation)"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["direct", "indirect", "mirroring"],
+            "description": "Question style used for RQ3/RQ4 analyses"
+          },
+          "diagnostic_for": {
+            "type": "string",
+            "enum": ["conspiratorial", "secondary", "new", "mixed", "none"],
+            "description": "Primary PCA dimension the item is diagnostic for"
           }
         },
         "additionalProperties": false
