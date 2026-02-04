@@ -8,7 +8,7 @@ and optionally generates flattened analysis table.
 import json
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 import csv
 
 # Add scripts directory to path for imports
@@ -135,7 +135,19 @@ def create_csv_table(records: List[Dict], output_file: Path):
     fieldnames = [
         'timestamp',
         'persona_id',
+        'persona_country',
+        'persona_conspiratorial_level',
+        'persona_secondary_level',
+        'persona_new_level',
+        'persona_age_group',
+        'persona_gender',
+        'persona_education',
+        'persona_religiosity',
+        'persona_political_trust',
+        'persona_migration_attitude',
         'question_id',
+        'question_type',
+        'question_diagnostic_for',
         'model_id',
         'model_family',
         'api_model_name',
@@ -151,6 +163,15 @@ def create_csv_table(records: List[Dict], output_file: Path):
         'refusal_flag_count',
         'harmful_content_flag_detected',
         'harmful_content_flag_count',
+        'antisemitic_framing_detected',
+        'antisemitic_framing_count',
+        # Frames
+        'frame_moral_count',
+        'frame_moral_per_100_words',
+        'frame_epistemic_count',
+        'frame_epistemic_per_100_words',
+        'frame_political_count',
+        'frame_political_per_100_words',
         # Soft signals
         'hedging_count',
         'hedging_per_100_words',
@@ -174,11 +195,25 @@ def create_csv_table(records: List[Dict], output_file: Path):
             analysis = record.get('neutrality_analysis', {})
             token_usage = record.get('token_usage', {})
             response_text = record.get('response_text', '')
+            persona_meta: Dict[str, Any] = record.get('persona_metadata', {})
+            question_meta: Dict[str, Any] = record.get('question_metadata', {})
             
             row = {
                 'timestamp': record.get('timestamp', ''),
                 'persona_id': record.get('persona_id', ''),
+                'persona_country': persona_meta.get('country', ''),
+                'persona_conspiratorial_level': persona_meta.get('dimension_profile', {}).get('conspiratorial', ''),
+                'persona_secondary_level': persona_meta.get('dimension_profile', {}).get('secondary', ''),
+                'persona_new_level': persona_meta.get('dimension_profile', {}).get('new', ''),
+                'persona_age_group': persona_meta.get('sociodem', {}).get('age_group', ''),
+                'persona_gender': persona_meta.get('sociodem', {}).get('gender', ''),
+                'persona_education': persona_meta.get('sociodem', {}).get('education', ''),
+                'persona_religiosity': persona_meta.get('sociodem', {}).get('religiosity', ''),
+                'persona_political_trust': persona_meta.get('sociodem', {}).get('political_trust', ''),
+                'persona_migration_attitude': persona_meta.get('sociodem', {}).get('migration_attitude', ''),
                 'question_id': record.get('question_id', ''),
+                'question_type': question_meta.get('type', ''),
+                'question_diagnostic_for': question_meta.get('diagnostic_for', ''),
                 'model_id': record.get('model_id', ''),
                 'model_family': record.get('model_family', ''),
                 'api_model_name': record.get('api_model_name', ''),
@@ -194,6 +229,15 @@ def create_csv_table(records: List[Dict], output_file: Path):
                 'refusal_flag_count': analysis.get('refusal_flag', {}).get('match_count', 0),
                 'harmful_content_flag_detected': analysis.get('harmful_content_flag', {}).get('detected', False),
                 'harmful_content_flag_count': analysis.get('harmful_content_flag', {}).get('match_count', 0),
+                'antisemitic_framing_detected': analysis.get('antisemitic_framing', {}).get('detected', False),
+                'antisemitic_framing_count': analysis.get('antisemitic_framing', {}).get('match_count', 0),
+                # Frames
+                'frame_moral_count': analysis.get('frames', {}).get('moral', {}).get('count', 0),
+                'frame_moral_per_100_words': analysis.get('frames', {}).get('moral', {}).get('per_100_words', 0.0),
+                'frame_epistemic_count': analysis.get('frames', {}).get('epistemic', {}).get('count', 0),
+                'frame_epistemic_per_100_words': analysis.get('frames', {}).get('epistemic', {}).get('per_100_words', 0.0),
+                'frame_political_count': analysis.get('frames', {}).get('political', {}).get('count', 0),
+                'frame_political_per_100_words': analysis.get('frames', {}).get('political', {}).get('per_100_words', 0.0),
                 # Soft signals
                 'hedging_count': analysis.get('hedging', {}).get('count', 0),
                 'hedging_per_100_words': analysis.get('hedging', {}).get('per_100_words', 0.0),
@@ -234,11 +278,25 @@ def create_parquet_table(records: List[Dict], output_file: Path):
         analysis = record.get('neutrality_analysis', {})
         token_usage = record.get('token_usage', {})
         response_text = record.get('response_text', '')
+        persona_meta: Dict[str, Any] = record.get('persona_metadata', {})
+        question_meta: Dict[str, Any] = record.get('question_metadata', {})
         
         row = {
             'timestamp': record.get('timestamp', ''),
             'persona_id': record.get('persona_id', ''),
+            'persona_country': persona_meta.get('country', ''),
+            'persona_conspiratorial_level': persona_meta.get('dimension_profile', {}).get('conspiratorial', ''),
+            'persona_secondary_level': persona_meta.get('dimension_profile', {}).get('secondary', ''),
+            'persona_new_level': persona_meta.get('dimension_profile', {}).get('new', ''),
+            'persona_age_group': persona_meta.get('sociodem', {}).get('age_group', ''),
+            'persona_gender': persona_meta.get('sociodem', {}).get('gender', ''),
+            'persona_education': persona_meta.get('sociodem', {}).get('education', ''),
+            'persona_religiosity': persona_meta.get('sociodem', {}).get('religiosity', ''),
+            'persona_political_trust': persona_meta.get('sociodem', {}).get('political_trust', ''),
+            'persona_migration_attitude': persona_meta.get('sociodem', {}).get('migration_attitude', ''),
             'question_id': record.get('question_id', ''),
+            'question_type': question_meta.get('type', ''),
+            'question_diagnostic_for': question_meta.get('diagnostic_for', ''),
             'model_id': record.get('model_id', ''),
             'model_family': record.get('model_family', ''),
             'api_model_name': record.get('api_model_name', ''),
@@ -254,6 +312,8 @@ def create_parquet_table(records: List[Dict], output_file: Path):
             'refusal_flag_count': analysis.get('refusal_flag', {}).get('match_count', 0),
             'harmful_content_flag_detected': analysis.get('harmful_content_flag', {}).get('detected', False),
             'harmful_content_flag_count': analysis.get('harmful_content_flag', {}).get('match_count', 0),
+            'antisemitic_framing_detected': analysis.get('antisemitic_framing', {}).get('detected', False),
+            'antisemitic_framing_count': analysis.get('antisemitic_framing', {}).get('match_count', 0),
             # Soft signals
             'hedging_count': analysis.get('hedging', {}).get('count', 0),
             'hedging_per_100_words': analysis.get('hedging', {}).get('per_100_words', 0.0),
@@ -263,6 +323,13 @@ def create_parquet_table(records: List[Dict], output_file: Path):
             'moral_language_per_100_words': analysis.get('moral_language', {}).get('per_100_words', 0.0),
             'prescriptive_verbs_count': analysis.get('prescriptive_verbs', {}).get('count', 0),
             'prescriptive_verbs_per_100_words': analysis.get('prescriptive_verbs', {}).get('per_100_words', 0.0),
+            # Frame markers
+            'frame_moral_count': analysis.get('frames', {}).get('moral', {}).get('count', 0),
+            'frame_moral_per_100_words': analysis.get('frames', {}).get('moral', {}).get('per_100_words', 0.0),
+            'frame_epistemic_count': analysis.get('frames', {}).get('epistemic', {}).get('count', 0),
+            'frame_epistemic_per_100_words': analysis.get('frames', {}).get('epistemic', {}).get('per_100_words', 0.0),
+            'frame_political_count': analysis.get('frames', {}).get('political', {}).get('count', 0),
+            'frame_political_per_100_words': analysis.get('frames', {}).get('political', {}).get('per_100_words', 0.0),
             # Token usage
             'prompt_tokens': token_usage.get('prompt_tokens') or 0,
             'completion_tokens': token_usage.get('completion_tokens') or 0,
@@ -312,6 +379,11 @@ def main():
         action='store_true',
         help="Only generate analysis table, skip JSONL output"
     )
+    parser.add_argument(
+        '--print-summary',
+        action='store_true',
+        help="Print simple summaries for RQ-style analyses (dimensions, frames, consistency)"
+    )
     
     args = parser.parse_args()
     
@@ -324,8 +396,88 @@ def main():
     # Generate analysis table
     if analyzed_records:
         create_analysis_table(analyzed_records, args.output_table, format=args.format)
+        if args.print_summary:
+            print_rq_summaries(analyzed_records)
     else:
         print("No records found to analyze")
+
+
+def print_rq_summaries(records: List[Dict]):
+    """
+    Print simple, low-cost summaries relevant to RQ1–RQ7.
+
+    This is intentionally lightweight (no heavy stats libraries) and aimed at
+    quick inspection of patterns rather than full inference.
+    """
+    if not records:
+        return
+
+    def avg(values: List[float]) -> float:
+        return sum(values) / len(values) if values else 0.0
+
+    # RQ1/RQ2: metrics by dimension profile
+    by_dim: Dict[str, Dict[str, List[float]]] = {}
+    for r in records:
+        meta = r.get("persona_metadata", {})
+        dims = meta.get("dimension_profile", {})
+        level = dims.get("conspiratorial") or "unknown"
+        analysis = r.get("neutrality_analysis", {})
+        hedging = analysis.get("hedging", {}).get("per_100_words", 0.0)
+        certainty = analysis.get("certainty", {}).get("per_100_words", 0.0)
+        by_dim.setdefault(level, {"hedging": [], "certainty": []})
+        by_dim[level]["hedging"].append(float(hedging or 0.0))
+        by_dim[level]["certainty"].append(float(certainty or 0.0))
+
+    print("\n=== RQ1/RQ2: Hedging and certainty by conspiratorial dimension ===")
+    for level, vals in sorted(by_dim.items()):
+        print(f"- {level}: hedging={avg(vals['hedging']):.2f} per 100 words, certainty={avg(vals['certainty']):.2f} per 100 words")
+
+    # RQ3/RQ4: by question type and diagnostic_for
+    by_qtype: Dict[str, Dict[str, int]] = {}
+    for r in records:
+        qmeta = r.get("question_metadata", {})
+        qtype = qmeta.get("type", "unknown")
+        diag = qmeta.get("diagnostic_for", "none")
+        analysis = r.get("neutrality_analysis", {})
+        harmful = bool(analysis.get("harmful_content_flag", {}).get("detected", False))
+        antisemitic = bool(analysis.get("antisemitic_framing", {}).get("detected", False))
+        key = f"{qtype}:{diag}"
+        stats = by_qtype.setdefault(key, {"n": 0, "harmful": 0, "antisemitic": 0})
+        stats["n"] += 1
+        if harmful:
+            stats["harmful"] += 1
+        if antisemitic:
+            stats["antisemitic"] += 1
+
+    print("\n=== RQ3/RQ4: Question type × diagnostic_for (harmful / antisemitic rates) ===")
+    for key, stats in sorted(by_qtype.items()):
+        n = stats["n"]
+        if n == 0:
+            continue
+        h_rate = stats["harmful"] / n
+        a_rate = stats["antisemitic"] / n
+        print(f"- {key}: n={n}, harmful_rate={h_rate:.2f}, antisemitic_rate={a_rate:.2f}")
+
+    # RQ7: simple consistency check across repeats
+    combos: Dict[tuple, List[bool]] = {}
+    for r in records:
+        k = (r.get("persona_id"), r.get("question_id"), r.get("model_id"))
+        analysis = r.get("neutrality_analysis", {})
+        harmful = bool(analysis.get("harmful_content_flag", {}).get("detected", False))
+        combos.setdefault(k, []).append(harmful)
+
+    inconsistent = 0
+    total = 0
+    for k, flags in combos.items():
+        if len(flags) < 2:
+            continue
+        total += 1
+        if any(f != flags[0] for f in flags[1:]):
+            inconsistent += 1
+
+    if total > 0:
+        print("\n=== RQ7: Consistency of harmful_content_flag across repeats ===")
+        print(f"- Repeated combos: {total}, inconsistent in {inconsistent} cases ({inconsistent/total:.2f})")
 
 
 if __name__ == "__main__":

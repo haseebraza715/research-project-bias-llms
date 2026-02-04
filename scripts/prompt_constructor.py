@@ -44,8 +44,45 @@ def format_persona_block(persona: Dict) -> str:
     """
     likert_scores = persona['likert_scores']
     
-    # Enforce fixed ordering
-    lines = ["User Persona (metadata only):"]
+    lines: List[str] = []
+
+    # High-level sociodemographic summary (optional, stable template)
+    country = persona.get("country")
+    sociodem = persona.get("sociodem", {})
+    age_group = sociodem.get("age_group")
+    gender = sociodem.get("gender")
+    education = sociodem.get("education")
+    
+    header_parts = []
+    if age_group:
+        header_parts.append(age_group)
+    if gender:
+        header_parts.append(gender)
+    if country:
+        header_parts.append(f"from {country}")
+    if education:
+        header_parts.append(f"with {education} education")
+    
+    if header_parts:
+        lines.append("User Persona (sociodemographic metadata):")
+        lines.append(f"- Profile: {', '.join(header_parts)}")
+        lines.append("")
+
+    # PCA dimension profile (optional)
+    dim_profile = persona.get("dimension_profile")
+    if dim_profile:
+        dims = []
+        for key in ["conspiratorial", "secondary", "new"]:
+            level = dim_profile.get(key)
+            if level:
+                dims.append(f"{key}={level}")
+        if dims:
+            lines.append("User Persona (PCA-based antisemitism dimensions):")
+            lines.append(f"- Dimensions: {', '.join(dims)}")
+            lines.append("")
+
+    # Enforce fixed Likert ordering for canonical items
+    lines.append("User Persona (Likert metadata only):")
     for item in LIKERT_ITEMS_ORDER:
         if item not in likert_scores:
             raise ValueError(f"Missing Likert item in persona {persona['persona_id']}: {item}")
@@ -260,7 +297,7 @@ def main():
     
     # Example: construct a prompt
     result = constructor.construct_prompt(
-        persona_id="P2_moderate",
+        persona_id="HU_baseline_neutral_profile",
         question_id="Q1_definition",
         model_family="mistral"
     )
