@@ -1,4 +1,4 @@
-# research-project-bias-llms
+# llm-bias-evaluation
 
 Research pipeline for studying LLM responses to sensitive social topics.
 
